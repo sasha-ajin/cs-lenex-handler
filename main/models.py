@@ -1,17 +1,24 @@
 from django.db import models
-from .utils import file_txt_handle
+from docs.nations_tuple import nations
 
-NATIONS = file_txt_handle("./docs/nations.txt")
+NATIONS = nations
 
 
 class Club(models.Model):
+    TYPES = (
+        ('CLUB', 'CLUB'),
+        ('NATIONALTEAM', 'NATIONALTEAM'),
+        ('REGIONALTEAM', 'REGIONALTEAM'),
+        ('UNATTACHED', 'UNATTACHED'),
+    )
     code = models.CharField(max_length=20)
     nation = models.CharField(max_length=10, choices=NATIONS)
     clubid = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=50)
+    type = models.CharField(max_length=25, choices=TYPES, default='UNATTACHED')
 
     def __str__(self):
-        return f"{self.name} - {self.clubid} ({self.nation})"
+        return f"{self.clubid} {self.name} ({self.nation})"
 
 
 class Athlete(models.Model):
@@ -25,10 +32,17 @@ class Athlete(models.Model):
     gender = models.CharField(max_length=50, choices=GENDERS)
     nation = models.CharField(max_length=15, choices=NATIONS)
     athleteid = models.CharField(max_length=100, unique=True)
-    club = models.ForeignKey(Club, on_delete=models.CASCADE,null=True)
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname} | {self.athleteid} ({self.nation})"
+        return f" {self.athleteid} {self.firstname} {self.lastname}  ({self.nation})"
+
+
+class AthleteClub(models.Model):
+    athlete = models.ForeignKey(Athlete, on_delete=models.SET_NULL, null=True)
+    club = models.ForeignKey(Club, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.athlete} | {self.club}"
 
 
 class Meet(models.Model):
@@ -60,7 +74,7 @@ class Meet(models.Model):
         ('OPEN', 'OPEN'),
     )
     clubs = models.ManyToManyField(Club)
-    athletes = models.ManyToManyField(Athlete)
+    athleteclubs = models.ManyToManyField(AthleteClub)
     city = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
     course = models.CharField(max_length=20, choices=COURCES)
