@@ -27,6 +27,8 @@ class Main(views.View):
                     messages.info(request, f"{res['club_updated']} club(-s) updated")
                     messages.info(request, f"{res['athlete_updated']} athlete(-s) updated")
                     messages.info(request, f"{res['record_updated']} record(-s) updated")
+                if not res['created'] and not res['updated']:
+                    messages.info(request, f"Nothing was created and updated")
                 messages.info(request, f"There was no errors")
         else:
             messages.info(request, 'File is not valid, probably problem is in extension')
