@@ -1277,6 +1277,7 @@
         </SESSION>
       </SESSIONS>
       <CLUBS>
+
         <CLUB type="CLUB" code="VIH" nation="BUL" clubid="1316" name="Vihren">
           <ATHLETES>
             <ATHLETE birthdate="2005-12-30" firstname="Kristiyan" gender="M" lastname="Spiriev" nation="BUL" license="SW3204" athleteid="1350">
